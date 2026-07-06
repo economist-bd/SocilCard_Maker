@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>সোশ্যাল কার্ড মেকার - Social Card Maker</title>
+    <meta name="description" content="ফেসবুক, টিকটক এবং ইন্সটাগ্রামের জন্য সুন্দর ফটো কার্ড তৈরি করুন।">
+    
+    <!-- OG Tags for Social Media Sharing -->
+    <meta property="og:title" content="সোশ্যাল কার্ড মেকার (PWA)">
+    <meta property="og:description" content="ফেসবুক, টিকটক এবং ইন্সটাগ্রামের জন্য সুন্দর ফটো কার্ড তৈরি করুন বিভিন্ন ফন্ট ও কালার দিয়ে।">
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="https://placehold.co/1200x630/4f46e5/ffffff?text=Social+Card+Maker">
+
+    <!-- PWA Manifest & Theme -->
+    <meta name="theme-color" content="#4f46e5">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="apple-touch-icon" href="https://placehold.co/192x192/4f46e5/ffffff?text=App+Icon">
+    
+    <link rel="manifest" href='data:application/manifest+json,{"name":"Social Card Maker","short_name":"CardMaker","start_url":".","display":"standalone","background_color":"#f3f4f6","theme_color":"#4f46e5","icons":[{"src":"https://placehold.co/192x192/4f46e5/ffffff?text=Icon","sizes":"192x192","type":"image/png"},{"src":"https://placehold.co/512x512/4f46e5/ffffff?text=Icon","sizes":"512x512","type":"image/png"}]}'>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+    <!-- Google Fonts (20+ Fonts including Poster/Signboard Bangla styles) -->
+    <link href="https://fonts.googleapis.com/css2?family=Anek+Bangla:wght@400;700;800&family=Atma:wght@600;700&family=Baloo+Da+2:wght@600;700;800&family=Galada&family=Hind+Siliguri:wght@500;700&family=Mina:wght@400;700&family=Mukta:wght@600;700&family=Noto+Sans+Bengali:wght@500;700;900&family=Noto+Serif+Bengali:wght@500;700&family=Tiro+Bangla&family=Caveat:wght@700&family=Dancing+Script:wght@700&family=Lobster&family=Oswald:wght@700&family=Pacifico&family=Righteous&family=Bebas+Neue&family=Abril+Fatface&family=Bangers&family=Alfa+Slab+One&display=swap" rel="stylesheet">
+
+    <style>
+        /* Font families */
+        body { font-family: 'Anek Bangla', sans-serif; }
+        
+        /* Bangla Fonts */
+        .font-anek { font-family: 'Anek Bangla', sans-serif; }
+        .font-hind { font-family: 'Hind Siliguri', sans-serif; }
+        .font-notosans { font-family: 'Noto Sans Bengali', sans-serif; }
+        .font-notoserif { font-family: 'Noto Serif Bengali', serif; }
+        .font-baloo { font-family: 'Baloo Da 2', cursive; }
+        .font-tiro { font-family: 'Tiro Bangla', serif; }
+        .font-mina { font-family: 'Mina', sans-serif; }
+        .font-galada { font-family: 'Galada', cursive; }
+        .font-atma { font-family: 'Atma', cursive; }
+        .font-mukta { font-family: 'Mukta', sans-serif; }
+        
+        /* Stylized/Display Fonts */
+        .font-caveat { font-family: 'Caveat', cursive; }
+        .font-dancing { font-family: 'Dancing Script', cursive; }
+        .font-lobster { font-family: 'Lobster', cursive; }
+        .font-oswald { font-family: 'Oswald', sans-serif; }
+        .font-pacifico { font-family: 'Pacifico', cursive; }
+        .font-righteous { font-family: 'Righteous', cursive; }
+        .font-bebas { font-family: 'Bebas Neue', cursive; }
+        .font-abril { font-family: 'Abril Fatface', cursive; }
+        .font-bangers { font-family: 'Bangers', cursive; }
+        .font-alfa { font-family: 'Alfa Slab One', cursive; }
+
+        /* Utilities */
+        .ratio-1-1 { aspect-ratio: 1 / 1; }
+        .ratio-9-16 { aspect-ratio: 9 / 16; }
+        .ratio-4-5 { aspect-ratio: 4 / 5; }
+        .ratio-16-9 { aspect-ratio: 16 / 9; }
+
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; }
+        ::-webkit-scrollbar-thumb { background: #c7c7cc; border-radius: 10px; }
+        
+        input[type="color"] {
+            -webkit-appearance: none;
+            border: none;
+            width: 100%;
+            height: 40px;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            padding: 0;
+            overflow: hidden;
+        }
+        input[type="color"]::-webkit-color-swatch-wrapper { padding: 0; }
+        input[type="color"]::-webkit-color-swatch { border: none; border-radius: 0.5rem; }
+        
+        #captureArea { transition: background-color 0.3s ease; }
+        
+        /* Float animation */
+        @keyframes bounce-slow {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        .animate-bounce-slow { animation: bounce-slow 3s infinite; }
+    </style>
+</head>
+<body class="bg-gray-100 text-gray-800 min-h-screen flex flex-col relative">
+
+    <!-- Navbar -->
+    <nav class="bg-indigo-600 text-white shadow-md p-4 sticky top-0 z-40">
+        <div class="max-w-6xl mx-auto flex justify-between items-center">
+            <h1 class="text-xl md:text-2xl font-bold flex items-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 001.5 1.5zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
+                </svg>
+                সোশ্যাল কার্ড মেকার
+            </h1>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="flex-grow p-4 md:p-6 w-full max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-6 items-start pb-24">
+        
+        <!-- Left Panel: Controls -->
+        <div class="bg-white p-5 md:p-6 rounded-2xl shadow-sm border border-gray-200 flex flex-col gap-6">
+            
+            <!-- Title Section -->
+            <div class="p-4 bg-indigo-50 border border-indigo-100 rounded-xl space-y-3">
+                <label class="block text-sm font-bold text-indigo-900">টাইটেল (বোল্ড ও বড় অক্ষর)</label>
+                <input type="text" id="titleInput" class="w-full p-3 border border-indigo-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 font-bold" placeholder="এখানে টাইটেল লিখুন (ঐচ্ছিক)...">
+                
+                <div class="grid grid-cols-2 gap-4 items-center">
+                    <div>
+                        <span class="text-xs text-indigo-700 font-semibold mb-1 block">টাইটেল কালার</span>
+                        <input type="color" id="titleColorInput" value="#ffff00">
+                    </div>
+                    <div>
+                        <span class="text-xs text-indigo-700 font-semibold mb-1 block">টাইটেল সাইজ</span>
+                        <input type="range" id="titleSizeInput" min="20" max="100" value="48" class="w-full accent-indigo-600 mt-2">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Body Text Section -->
+            <div>
+                <label class="block text-sm font-bold mb-2 text-gray-700">মূল লেখা (ইমুজি সাপোর্ট করে 🚀)</label>
+                <textarea id="textInput" rows="3" class="w-full p-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 resize-none" placeholder="এখানে আপনার স্ট্যাটাস বা উক্তি লিখুন..."></textarea>
+            </div>
+
+            <!-- Font Selector -->
+            <div>
+                <label class="block text-sm font-bold mb-2 text-gray-700">ফন্ট স্টাইল (২০+ সাইনবোর্ড ও রেগুলার ফন্ট)</label>
+                <select id="fontSelect" class="w-full p-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white font-bold">
+                    <optgroup label="জনপ্রিয় বাংলা ফন্ট">
+                        <option value="font-anek">Anek Bangla (আধুনিক)</option>
+                        <option value="font-notosans">Noto Sans Bengali (স্ট্যান্ডার্ড)</option>
+                        <option value="font-baloo">Baloo Da 2 (রাউন্ড স্টাইল)</option>
+                        <option value="font-hind">Hind Siliguri (ক্লিন)</option>
+                        <option value="font-mina">Mina (স্মার্ট)</option>
+                        <option value="font-mukta">Mukta (সিম্পল)</option>
+                        <option value="font-notoserif">Noto Serif Bengali (বইয়ের ফন্ট)</option>
+                        <option value="font-tiro">Tiro Bangla (ক্লাসিক)</option>
+                    </optgroup>
+                    <optgroup label="পোস্টার ও স্টাইলিশ বাংলা">
+                        <option value="font-galada">Galada (হাতের লেখা)</option>
+                        <option value="font-atma">Atma (আর্টিস্টিক)</option>
+                    </optgroup>
+                    <optgroup label="ইংরেজি স্টাইলিশ ফন্ট">
+                        <option value="font-bebas">Bebas Neue (বোল্ড পোস্টার)</option>
+                        <option value="font-bangers">Bangers (কমিক স্টাইল)</option>
+                        <option value="font-alfa">Alfa Slab One (হেভি বোল্ড)</option>
+                        <option value="font-righteous">Righteous (মডার্ন)</option>
+                        <option value="font-abril">Abril Fatface (ম্যাগাজিন)</option>
+                        <option value="font-pacifico">Pacifico (স্টাইলিশ কার্সিভ)</option>
+                        <option value="font-lobster">Lobster (বোল্ড কার্সিভ)</option>
+                        <option value="font-caveat">Caveat (মার্কার স্টাইল)</option>
+                        <option value="font-dancing">Dancing Script (স্মুথ)</option>
+                        <option value="font-oswald">Oswald (লম্বাটে)</option>
+                    </optgroup>
+                </select>
+            </div>
+
+            <!-- Aspect Ratio Selector -->
+            <div>
+                <label class="block text-sm font-bold mb-2 text-gray-700">ছবির সাইজ (Ratio)</label>
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                    <button class="ratio-btn bg-indigo-100 text-indigo-700 border-2 border-indigo-500 py-2 px-1 rounded-lg text-xs md:text-sm font-bold transition" data-ratio="ratio-1-1">1:1 (FB/Insta)</button>
+                    <button class="ratio-btn bg-gray-50 text-gray-600 border-2 border-gray-200 py-2 px-1 rounded-lg text-xs md:text-sm font-bold hover:bg-gray-100 transition" data-ratio="ratio-9-16">9:16 (TikTok)</button>
+                    <button class="ratio-btn bg-gray-50 text-gray-600 border-2 border-gray-200 py-2 px-1 rounded-lg text-xs md:text-sm font-bold hover:bg-gray-100 transition" data-ratio="ratio-4-5">4:5 (Portrait)</button>
+                    <button class="ratio-btn bg-gray-50 text-gray-600 border-2 border-gray-200 py-2 px-1 rounded-lg text-xs md:text-sm font-bold hover:bg-gray-100 transition" data-ratio="ratio-16-9">16:9 (Landscape)</button>
+                </div>
+            </div>
+
+            <!-- Color & Size Controls -->
+            <div class="bg-gray-50 p-4 border border-gray-200 rounded-xl space-y-4">
+                <div class="flex justify-between items-center">
+                    <label class="block text-sm font-bold text-gray-700">ব্যাকগ্রাউন্ড ও টেক্সট সেটিং</label>
+                    <button id="randomColorBtn" class="text-xs bg-indigo-600 text-white px-3 py-1.5 rounded-lg hover:bg-indigo-700 transition shadow flex items-center gap-1 font-bold">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4"><path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99" /></svg>
+                        ম্যাজিক কালার
+                    </button>
+                </div>
+                
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="flex flex-col gap-1">
+                        <span class="text-xs text-gray-600 font-semibold">ব্যাকগ্রাউন্ড</span>
+                        <input type="color" id="bgColorInput" value="#4f46e5">
+                    </div>
+                    <div class="flex flex-col gap-1">
+                        <span class="text-xs text-gray-600 font-semibold">মূল লেখার কালার</span>
+                        <input type="color" id="textColorInput" value="#ffffff">
+                    </div>
+                </div>
+                
+                <div>
+                    <span class="text-xs text-gray-600 font-semibold mb-1 block">মূল লেখার সাইজ</span>
+                    <input type="range" id="fontSizeInput" min="16" max="80" value="32" class="w-full accent-indigo-600">
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Panel: Preview & Actions -->
+        <div class="flex flex-col gap-4">
+            
+            <!-- Preview Canvas -->
+            <div class="bg-gray-200 rounded-2xl flex items-center justify-center p-4 md:p-8 overflow-hidden shadow-inner border border-gray-300">
+                
+                <!-- The actual capture element -->
+                <div id="captureArea" class="w-full max-w-[400px] ratio-1-1 rounded-xl shadow-lg flex flex-col items-center justify-center p-8 text-center break-words overflow-hidden relative" style="background-color: #4f46e5;">
+                    <!-- Title -->
+                    <h1 id="previewTitle" class="font-anek font-black w-full whitespace-pre-wrap leading-tight hidden mb-3 drop-shadow-md z-10" style="color: #ffff00; font-size: 48px;"></h1>
+                    
+                    <!-- Body Text -->
+                    <p id="previewText" class="font-anek text-3xl font-bold w-full whitespace-pre-wrap leading-snug z-10" style="color: #ffffff;">আপনার সুন্দর চিন্তাধারাগুলো এখানে ভেসে উঠবে ✨</p>
+                </div>
+                
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="grid grid-cols-2 gap-4 mt-2">
+                <button id="downloadBtn" class="bg-green-600 hover:bg-green-700 text-white py-4 px-4 rounded-xl font-black text-lg flex items-center justify-center gap-2 shadow-md transition active:scale-95">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" /></svg>
+                    ডাউনলোড
+                </button>
+                <button id="shareBtn" class="bg-blue-600 hover:bg-blue-700 text-white py-4 px-4 rounded-xl font-black text-lg flex items-center justify-center gap-2 shadow-md transition active:scale-95">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="M7.217 10.907a2.25 2.25 0 100 2.186m0-2.186c.18.324.283.696.283 1.093s-.103.77-.283 1.093m0-2.186l9.566-5.314m-9.566 7.5l9.566 5.314m0 0a2.25 2.25 0 103.935 2.186 2.25 2.25 0 00-3.935-2.186zm0-12.814a2.25 2.25 0 103.933-2.185 2.25 2.25 0 00-3.933 2.185z" /></svg>
+                    শেয়ার করুন
+                </button>
+            </div>
+            
+            <!-- Developer Identity Info -->
+            <div class="mt-6 text-center p-6 bg-white rounded-2xl shadow-sm border border-gray-200">
+                <p class="text-gray-500 text-sm font-medium">ডেভেলপমেন্ট এবং ডিজাইনে</p>
+                <h3 class="text-xl font-black text-indigo-900 mt-1">MD. MONGERUL HAQUE</h3>
+                <a href="https://deenpath-bangla.vercel.app/" target="_blank" class="inline-block mt-2 text-indigo-600 font-bold hover:text-indigo-800 transition">
+                    Learning to Earning Bangladesh
+                </a>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Floating WhatsApp Button -->
+    <a href="https://wa.me/8801715247588" target="_blank" class="fixed bottom-6 right-6 bg-[#25D366] text-white p-4 rounded-full shadow-2xl hover:bg-[#128C7E] transition-all hover:scale-110 z-50 animate-bounce-slow" aria-label="Chat on WhatsApp">
+        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-whatsapp" viewBox="0 0 16 16">
+            <path d="M13.601 2.326A7.85 7.85 0 0 0 7.994 0C3.627 0 .068 3.558.064 7.926c0 1.399.366 2.76 1.057 3.965L0 16l4.204-1.102a7.9 7.9 0 0 0 3.79.965h.004c4.368 0 7.926-3.558 7.93-7.93A7.9 7.9 0 0 0 13.6 2.326zM7.994 14.521a6.6 6.6 0 0 1-3.356-.92l-.24-.144-2.494.654.666-2.433-.156-.251a6.56 6.56 0 0 1-1.007-3.505c0-3.626 2.957-6.584 6.591-6.584a6.56 6.56 0 0 1 4.66 1.931 6.56 6.56 0 0 1 1.928 4.66c-.004 3.639-2.961 6.592-6.592 6.592m3.615-4.934c-.197-.099-1.17-.578-1.353-.646-.182-.065-.315-.099-.445.099-.133.197-.513.646-.627.775-.114.133-.232.148-.43.05-.197-.1-.836-.308-1.592-.985-.59-.525-.985-1.175-1.103-1.372-.114-.198-.011-.304.088-.403.087-.088.197-.232.296-.346.1-.114.133-.198.198-.33.065-.134.034-.248-.015-.347-.05-.099-.445-1.076-.612-1.47-.16-.389-.323-.335-.445-.34-.114-.007-.247-.007-.38-.007a.73.73 0 0 0-.529.247c-.182.198-.691.677-.691 1.654s.71 1.916.81 2.049c.098.133 1.394 2.132 3.383 2.992.47.205.84.326 1.129.418.475.152.904.129 1.246.08.38-.058 1.171-.48 1.338-.943.164-.464.164-.86.114-.943-.049-.084-.182-.133-.38-.232"/>
+        </svg>
+    </a>
+
+    <!-- Notification Toast -->
+    <div id="toast" class="fixed bottom-24 left-1/2 transform -translate-x-1/2 bg-gray-900 text-white px-6 py-3 rounded-full opacity-0 transition-opacity duration-300 pointer-events-none z-50 shadow-xl font-bold">
+        অ্যাকশন সফল হয়েছে!
+    </div>
+
+    <!-- App Install Notification Modal -->
+    <div id="installModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-[60] hidden opacity-0 transition-opacity duration-300">
+        <div class="bg-white rounded-3xl p-8 max-w-sm w-full mx-4 shadow-2xl text-center transform scale-95 transition-transform duration-300">
+            <div class="w-20 h-20 bg-indigo-100 rounded-full flex items-center justify-center mx-auto mb-4 text-indigo-600">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-10 h-10"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" /></svg>
+            </div>
+            <h3 class="text-2xl font-black text-gray-900 mb-2">অ্যাপটি ইন্সটল করুন</h3>
+            <p class="text-gray-500 mb-6 font-medium">অফলাইনে ব্যবহার এবং আরও ভালো অভিজ্ঞতার জন্য অ্যাপটি আপনার ফোনে যুক্ত করে নিন।</p>
+            <div class="flex gap-3">
+                <button id="closeInstallModal" class="flex-1 py-3 px-4 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl font-bold transition">পরে</button>
+                <button class="flex-1 py-3 px-4 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-bold transition shadow-lg shadow-indigo-200">ইন্সটল করুন</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Application Logic -->
+    <script>
+        // DOM Elements
+        const titleInput = document.getElementById('titleInput');
+        const textInput = document.getElementById('textInput');
+        const previewTitle = document.getElementById('previewTitle');
+        const previewText = document.getElementById('previewText');
+        const fontSelect = document.getElementById('fontSelect');
+        const ratioBtns = document.querySelectorAll('.ratio-btn');
+        const captureArea = document.getElementById('captureArea');
+        const bgColorInput = document.getElementById('bgColorInput');
+        const textColorInput = document.getElementById('textColorInput');
+        const titleColorInput = document.getElementById('titleColorInput');
+        const fontSizeInput = document.getElementById('fontSizeInput');
+        const titleSizeInput = document.getElementById('titleSizeInput');
+        const randomColorBtn = document.getElementById('randomColorBtn');
+        const downloadBtn = document.getElementById('downloadBtn');
+        const shareBtn = document.getElementById('shareBtn');
+        const toast = document.getElementById('toast');
+
+        // Update Previews
+        const updateTitle = () => {
+            if (titleInput.value.trim() === '') {
+                previewTitle.classList.add('hidden');
+            } else {
+                previewTitle.classList.remove('hidden');
+                previewTitle.innerText = titleInput.value;
+            }
+        };
+
+        const updateText = () => {
+            previewText.innerText = textInput.value || 'আপনার সুন্দর চিন্তাধারাগুলো এখানে ভেসে উঠবে ✨';
+        };
+
+        const updateFont = () => {
+            const allFonts = [
+                'font-anek', 'font-hind', 'font-notosans', 'font-notoserif', 'font-baloo', 
+                'font-tiro', 'font-mina', 'font-galada', 'font-atma', 'font-mukta',
+                'font-caveat', 'font-dancing', 'font-lobster', 'font-oswald', 'font-pacifico',
+                'font-righteous', 'font-bebas', 'font-abril', 'font-bangers', 'font-alfa'
+            ];
+            previewTitle.classList.remove(...allFonts);
+            previewText.classList.remove(...allFonts);
+            
+            previewTitle.classList.add(fontSelect.value);
+            previewText.classList.add(fontSelect.value);
+        };
+
+        const updateRatio = (e) => {
+            const btn = e.target;
+            const newRatio = btn.getAttribute('data-ratio');
+            
+            ratioBtns.forEach(b => {
+                b.classList.remove('bg-indigo-100', 'text-indigo-700', 'border-indigo-500');
+                b.classList.add('bg-gray-50', 'text-gray-600', 'border-gray-200');
+            });
+            btn.classList.add('bg-indigo-100', 'text-indigo-700', 'border-indigo-500');
+            btn.classList.remove('bg-gray-50', 'text-gray-600', 'border-gray-200');
+
+            captureArea.classList.remove('ratio-1-1', 'ratio-9-16', 'ratio-4-5', 'ratio-16-9');
+            captureArea.classList.add(newRatio);
+        };
+
+        const updateColors = () => {
+            captureArea.style.backgroundColor = bgColorInput.value;
+            previewText.style.color = textColorInput.value;
+            previewTitle.style.color = titleColorInput.value;
+        };
+
+        const updateFontSize = () => {
+            previewText.style.fontSize = `${fontSizeInput.value}px`;
+        };
+
+        const updateTitleSize = () => {
+            previewTitle.style.fontSize = `${titleSizeInput.value}px`;
+        };
+
+        const generateRandomColor = () => {
+            return '#' + Math.floor(Math.random()*16777215).toString(16).padStart(6, '0');
+        };
+
+        const setRandomColors = () => {
+            bgColorInput.value = generateRandomColor();
+            textColorInput.value = generateRandomColor();
+            titleColorInput.value = generateRandomColor();
+            updateColors();
+        };
+
+        const showToast = (message) => {
+            toast.innerText = message;
+            toast.classList.remove('opacity-0');
+            setTimeout(() => toast.classList.add('opacity-0'), 3000);
+        };
+
+        // Event Listeners for UI
+        titleInput.addEventListener('input', updateTitle);
+        textInput.addEventListener('input', updateText);
+        fontSelect.addEventListener('change', updateFont);
+        ratioBtns.forEach(btn => btn.addEventListener('click', updateRatio));
+        bgColorInput.addEventListener('input', updateColors);
+        textColorInput.addEventListener('input', updateColors);
+        titleColorInput.addEventListener('input', updateColors);
+        fontSizeInput.addEventListener('input', updateFontSize);
+        titleSizeInput.addEventListener('input', updateTitleSize);
+        randomColorBtn.addEventListener('click', setRandomColors);
+
+        // HTML2Canvas Download
+        downloadBtn.addEventListener('click', async () => {
+            captureArea.style.transform = 'scale(1)'; 
+            const orgHtml = downloadBtn.innerHTML;
+            downloadBtn.innerHTML = `<svg class="animate-spin -ml-1 mr-2 h-6 w-6 text-white inline" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> প্রসেসিং...`;
+
+            try {
+                const canvas = await html2canvas(captureArea, { scale: 3, useCORS: true, backgroundColor: bgColorInput.value });
+                const link = document.createElement('a');
+                link.href = canvas.toDataURL("image/png");
+                link.download = `PhotoCard_${new Date().getTime()}.png`;
+                link.click();
+                showToast('ছবি সফলভাবে ডাউনলোড হয়েছে! 💖');
+            } catch (err) {
+                showToast('দুঃখিত, কোনো সমস্যা হয়েছে!');
+            } finally {
+                downloadBtn.innerHTML = orgHtml;
+            }
+        });
+
+        // Web Share API
+        shareBtn.addEventListener('click', async () => {
+            const orgHtml = shareBtn.innerHTML;
+            shareBtn.innerHTML = `<svg class="animate-spin -ml-1 mr-2 h-6 w-6 text-white inline" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> প্রসেসিং...`;
+            
+            try {
+                const canvas = await html2canvas(captureArea, { scale: 2, useCORS: true, backgroundColor: bgColorInput.value });
+                canvas.toBlob(async (blob) => {
+                    const file = new File([blob], 'social-card.png', { type: 'image/png' });
+                    if (navigator.canShare && navigator.canShare({ files: [file] })) {
+                        await navigator.share({ files: [file], title: 'My Social Card' });
+                        showToast('শেয়ারিং ওপেন হয়েছে!');
+                    } else {
+                        showToast('আপনার ব্রাউজার ইমেজ শেয়ার সাপোর্ট করে না।');
+                    }
+                    shareBtn.innerHTML = orgHtml;
+                }, 'image/png');
+            } catch (err) {
+                shareBtn.innerHTML = orgHtml;
+            }
+        });
+
+        // ----------------------------------------------------
+        // Install Notification & Sound Logic (Every 1 Minute)
+        // ----------------------------------------------------
+        let userInteracted = false;
+        const installModal = document.getElementById('installModal');
+        const closeInstallModal = document.getElementById('closeInstallModal');
+
+        // Detect user interaction to allow Web Audio API to play sound
+        const enableAudio = () => {
+            userInteracted = true;
+            document.removeEventListener('click', enableAudio);
+            document.removeEventListener('input', enableAudio);
+        };
+        document.addEventListener('click', enableAudio);
+        document.addEventListener('input', enableAudio);
+
+        // Generate a smooth Beep Sound
+        const playNotificationSound = () => {
+            try {
+                const ctx = new (window.AudioContext || window.webkitAudioContext)();
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(880, ctx.currentTime); // A5 note
+                
+                // Envelope for smooth sound
+                gain.gain.setValueAtTime(0, ctx.currentTime);
+                gain.gain.linearRampToValueAtTime(0.5, ctx.currentTime + 0.1);
+                gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.5);
+                
+                osc.start(ctx.currentTime);
+                osc.stop(ctx.currentTime + 0.5);
+            } catch (e) { console.log("Audio not supported or blocked."); }
+        };
+
+        const showInstallPrompt = () => {
+            // Check if app is NOT running as standalone PWA
+            const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
+            
+            if (!isStandalone && userInteracted) {
+                playNotificationSound();
+                
+                // Show Modal
+                installModal.classList.remove('hidden');
+                // Small delay to allow CSS transition
+                setTimeout(() => {
+                    installModal.classList.remove('opacity-0');
+                    installModal.firstElementChild.classList.remove('scale-95');
+                }, 10);
+            }
+        };
+
+        // Close Modal Event
+        closeInstallModal.addEventListener('click', () => {
+            installModal.classList.add('opacity-0');
+            installModal.firstElementChild.classList.add('scale-95');
+            setTimeout(() => installModal.classList.add('hidden'), 300);
+        });
+
+        // Trigger every 60 seconds (60000 ms)
+        setInterval(showInstallPrompt, 60000);
+
+        // SW Registration
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                const swCode = `self.addEventListener('install', e => self.skipWaiting()); self.addEventListener('activate', e => self.clients.claim()); self.addEventListener('fetch', e => {});`;
+                const blob = new Blob([swCode], { type: 'application/javascript' });
+                navigator.serviceWorker.register(URL.createObjectURL(blob)).catch(err => console.log('SW Registration Failed:', err));
+            });
+        }
+    </script>
+</body>
+</html>
